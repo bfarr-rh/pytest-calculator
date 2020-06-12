@@ -72,7 +72,7 @@ objects:
               exec:
                 command:
                   - pytest
-                  - ./tests/liveness-test.py
+                  - ./calc/tests/liveness-test.py
               initialDelaySeconds: 30
               timeoutSeconds: 45
               periodSeconds: 60
