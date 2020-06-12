@@ -1,0 +1,21 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- task: oc-setup@2
+  inputs:
+    openshiftService: 'pytest-prod-sa'
+    version: '4.3'
+- script: |
+    oc status
+    oc tag pytest-dev/pytest-calculator:latest pytest-prod/pytest-calculator:live
+    oc rollout latest dc/pytest-calculator
+    oc rollout status dc/pytest-calculator

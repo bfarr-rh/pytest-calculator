@@ -1,0 +1,65 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: pytest-dev-build-template
+parameters:
+  - name: SOURCE_REPOSITORY_URL
+    displayName: Source Repository URL
+    description: The URL of the source code repository
+    value: 'https://github.com/bfarr-rh/pytest-calculator.git'
+    required: true
+  - name: SOURCE_REPOSITORY_REF
+    description: The branch name for the application
+    displayName: Source Branch
+    value: master
+    required: true
+  - name: SOURCE_REPOSITORY_SECRET
+    description: The secret to use if required for the git repository
+    displayName: Source secret
+    required: false
+  - name: APPLICATION_NAME
+    description: The name for the application.
+    displayName: Application Name
+    required: true
+    value: pytest-calculator
+objects:
+  - kind: ImageStream
+    apiVersion: image.openshift.io/v1
+    metadata:
+      labels:
+        application: ${APPLICATION_NAME}
+        app: ${APPLICATION_NAME}
+      name: ${APPLICATION_NAME}
+    spec: {}
+  - kind: BuildConfig
+    apiVersion: build.openshift.io/v1
+    metadata:
+      name: ${APPLICATION_NAME}
+      labels:
+        app: ${APPLICATION_NAME}
+        build: ${APPLICATION_NAME}
+    spec:
+      nodeSelector: null
+      output:
+        to:
+          kind: ImageStreamTag
+          name: '${APPLICATION_NAME}:latest'
+      resources: {}
+      successfulBuildsHistoryLimit: 2
+      failedBuildsHistoryLimit: 2
+      strategy:
+        type: Source
+        sourceStrategy:
+          from:
+            kind: DockerImage
+            name: registry.redhat.io/rhel8/python-38
+      source:
+        type: Git
+        git:
+          uri: ${SOURCE_REPOSITORY_URL}
+          ref: ${SOURCE_REPOSITORY_REF}
+#       sourceSecret:
+#         name: ${SOURCE_REPOSITORY_SECRET}
+      triggers:
+        - type: ConfigChange
+      runPolicy: Serial
