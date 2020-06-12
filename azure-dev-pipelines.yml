@@ -26,7 +26,7 @@ steps:
   inputs:
     connectionType: 'OpenShift Connection Service'
     openshiftService: 'pytest-dev-sa'
-    cmd: 'start-build pytest-calculator --from-dir=. --follow'
+    cmd: 'start-build pytest-calculator --from-dir=/home/vsts/work/1/s --follow'
 - task: oc-cmd@2
   inputs:
     connectionType: 'OpenShift Connection Service'
