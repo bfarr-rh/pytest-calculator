@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'BenMachine'
 
 steps:
 - script: echo Hello, world!
@@ -16,41 +16,6 @@ steps:
 - script: |
     echo Add other tasks to build, test, and deploy your project.
     echo See https://aka.ms/yaml
+    oc status
+    
   displayName: 'Run a multi-line script'
-- task: oc-cmd@2
-  inputs:
-    connectionType: 'OpenShift Connection Service'
-    openshiftService: 'pytest-dev-sa'
-    cmd: 'status'
-- task: oc-cmd@2
-  inputs:
-    connectionType: 'OpenShift Connection Service'
-    openshiftService: 'pytest-dev-sa'
-    cmd: 'start-build pytest-calculator --from-dir=/home/vsts/work/1/s --follow'
-- task: oc-cmd@2
-  inputs:
-    connectionType: 'OpenShift Connection Service'
-    openshiftService: 'pytest-dev-sa'
-    cmd: 'rollout latest dc/pytest-calculator'
-- task: oc-cmd@2
-  inputs:
-    connectionType: 'OpenShift Connection Service'
-    openshiftService: 'pytest-dev-sa'
-    cmd: 'rollout status dc pytest-calculator'
-- task: oc-setup@2
-  inputs:
-    openshiftService: 'pytest-dev-sa'
-    version: '4.3'
-- script: |
-    sleep 90
-    echo "Waiting for pod redeployment"
-    POD_NAME=`oc get pods -l app=pytest-calculator -o jsonpath='{range .items[0].metadata}{.name}{"\n"}{end}'`
-    echo $POD_NAME
-    oc exec $POD_NAME -- pytest --junitxml=junit.xml
-    oc rsync $POD_NAME:/opt/app-root/src/junit.xml $(System.DefaultWorkingDirectory)
-- task: PublishTestResults@2
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/junit.xml'
-    failTaskOnFailedTests: true
-    testRunTitle: 'Published results'
