@@ -55,14 +55,14 @@ steps:
   inputs:
     connectionType: 'OpenShift Connection Service'
     openshiftService: 'Pytest-Dev'
-    cmd: 'exec $POD_NAME -- pytest --junitxml=junit.xml'
+    cmd: 'exec $(POD_NAME) -- pytest --junitxml=junit.xml'
     uselocalOc: true
 - task: oc-cmd@2
   displayName: 'Transfer unit test results'
   inputs:
     connectionType: 'OpenShift Connection Service'
     openshiftService: 'Pytest-Dev'
-    cmd: 'rsync $POD_NAME:/opt/app-root/src/junit.xml $(System.DefaultWorkingDirectory)'
+    cmd: 'rsync $(POD_NAME):/opt/app-root/src/junit.xml $(System.DefaultWorkingDirectory)'
     uselocalOc: true
 - task: PublishTestResults@2
   displayName: 'Publish unit test results'
