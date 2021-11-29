@@ -22,21 +22,25 @@ steps:
     connectionType: 'OpenShift Connection Service'
     openshiftService: 'Pytest-Dev'
     cmd: 'status'
+    uselocalOc: true
 - task: oc-cmd@2
   inputs:
     connectionType: 'OpenShift Connection Service'
     openshiftService: 'Pytest-Dev'
     cmd: 'start-build pytest-calculator --from-dir=/home/vsts/work/1/s --follow'
+    uselocalOc: true
 - task: oc-cmd@2
   inputs:
     connectionType: 'OpenShift Connection Service'
     openshiftService: 'Pytest-Dev'
     cmd: 'rollout latest dc/pytest-calculator'
+    uselocalOc: true
 - task: oc-cmd@2
   inputs:
     connectionType: 'OpenShift Connection Service'
     openshiftService: 'Pytest-Dev'
     cmd: 'rollout status dc pytest-calculator'
+    uselocalOc: true
 - task: oc-setup@2
   inputs:
     openshiftService: 'Pytest-Dev'
@@ -46,8 +50,18 @@ steps:
     echo "Waiting for pod redeployment"
     POD_NAME=`oc get pods -l app=pytest-calculator -o jsonpath='{range .items[0].metadata}{.name}{"\n"}{end}'`
     echo $POD_NAME
-    oc exec $POD_NAME -- pytest --junitxml=junit.xml
-    oc rsync $POD_NAME:/opt/app-root/src/junit.xml $(System.DefaultWorkingDirectory)
+- task: oc-cmd@2
+  inputs:
+    connectionType: 'OpenShift Connection Service'
+    openshiftService: 'Pytest-Dev'
+    cmd: 'exec $POD_NAME -- pytest --junitxml=junit.xml'
+    uselocalOc: true
+- task: oc-cmd@2
+  inputs:
+    connectionType: 'OpenShift Connection Service'
+    openshiftService: 'Pytest-Dev'
+    cmd: 'rsync $POD_NAME:/opt/app-root/src/junit.xml $(System.DefaultWorkingDirectory)'
+    uselocalOc: true
 - task: PublishTestResults@2
   inputs:
     testResultsFormat: 'JUnit'
