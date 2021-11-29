@@ -20,26 +20,26 @@ steps:
 - task: oc-cmd@2
   inputs:
     connectionType: 'OpenShift Connection Service'
-    openshiftService: 'pytest-dev-sa'
+    openshiftService: 'Pytest-Dev'
     cmd: 'status'
 - task: oc-cmd@2
   inputs:
     connectionType: 'OpenShift Connection Service'
-    openshiftService: 'pytest-dev-sa'
+    openshiftService: 'Pytest-Dev'
     cmd: 'start-build pytest-calculator --from-dir=/home/vsts/work/1/s --follow'
 - task: oc-cmd@2
   inputs:
     connectionType: 'OpenShift Connection Service'
-    openshiftService: 'pytest-dev-sa'
+    openshiftService: 'Pytest-Dev'
     cmd: 'rollout latest dc/pytest-calculator'
 - task: oc-cmd@2
   inputs:
     connectionType: 'OpenShift Connection Service'
-    openshiftService: 'pytest-dev-sa'
+    openshiftService: 'Pytest-Dev'
     cmd: 'rollout status dc pytest-calculator'
 - task: oc-setup@2
   inputs:
-    openshiftService: 'pytest-dev-sa'
+    openshiftService: 'Pytest-Dev'
     version: '4.3'
 - script: |
     sleep 90
