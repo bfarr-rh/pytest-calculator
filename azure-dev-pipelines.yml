@@ -48,8 +48,7 @@ steps:
 - script: |
     sleep 90
     echo "Waiting for pod redeployment"
-    export POD_NAME=`oc get pods -l app=pytest-calculator -o jsonpath='{range .items[0].metadata}{.name}{"\n"}{end}'`
-    echo $POD_NAME
+    ##vso[task.setvariable variable=POD_NAME]`oc get pods -l app=pytest-calculator -o jsonpath='{range .items[0].metadata}{.name}{"\n"}{end}'`
 - task: oc-cmd@2
   displayName: 'Run unit tests'
   inputs:
