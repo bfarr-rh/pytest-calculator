@@ -46,9 +46,9 @@ steps:
     version: '4.3'
   displayName: 'Find Pod Name'
 - script: |
-    sleep 90
+    sleep 80
     echo "Waiting for pod redeployment"
-    ##vso[task.setvariable variable=POD_NAME]`oc get pods -l app=pytest-calculator -o jsonpath='{range .items[0].metadata}{.name}{"\n"}{end}'`
+    echo "##vso[task.setvariable variable=POD_NAME]`oc get pods -l app=pytest-calculator -o jsonpath='{range .items[0].metadata}{.name}{"\n"}{end}'`"
 - task: oc-cmd@2
   displayName: 'Run unit tests'
   inputs:
